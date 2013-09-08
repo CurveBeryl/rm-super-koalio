@@ -7,6 +7,9 @@ class GameLayer < Joybox::Core::Layer
     
     @tile_map = TileMap.new file_name: 'level1.tmx'
     self << @tile_map
+    
+    @player = PlayerSprite.new
+    @tile_map.add_child @player, 15
   end
 
   def on_exit
