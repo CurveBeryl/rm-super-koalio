@@ -1,7 +1,8 @@
-class PlayerSprite < Joybox::Core::Sprite
+class PlayerSprite < Joybox::Physics::PhysicsSprite
   
-  def initialize
-    super file_name: 'koalio_stand.png', position: [100, 50]
+  def initialize(world)
+    body = world.new_body position: [100, 50], type: KDynamicBodyType
+    super file_name: 'koalio_stand.png', body: body
   end
 
   def on_enter
