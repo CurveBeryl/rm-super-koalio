@@ -9,7 +9,18 @@ class GameLayer < Joybox::Core::Layer
     
     @tile_map = TileMap.new file_name: 'level1.tmx'
     self << @tile_map
+    
+    @walls = @tile_map.tile_layers['walls']
+    _tileSize = @walls.tileset.tileSize
+    _layerSize = @walls.layerSize
 
+    (0.._layerSize.height - 1).each do |y|
+      (0.._layerSize.width - 1).each do |x|
+        tile = @walls.tileAt([x, y])
+        create_rectangular_fixture(@walls, x, y) if tile 
+      end
+    end
+    
     @player = PlayerSprite.new(@world)
     @tile_map.add_child @player, 15
     
@@ -20,6 +31,22 @@ class GameLayer < Joybox::Core::Layer
 
   def on_exit
     # Tear down
+  end
+  
+  def create_rectangular_fixture(layer, x, y)
+    p = layer.positionAt [x, y]
+    tw = layer.tileset.tileSize.width
+    th = layer.tileset.tileSize.height
+
+    # create the body, define the shape and create the fixture
+    body = @world.new_body(
+      position: [p.x, p.y - th], 
+      type: Body::Static) do
+        polygon_fixture box: [tw, th],
+                        density: 1.0,
+                        friction: 0.3,
+                        restitution: 0.0
+    end
   end
 
 end
