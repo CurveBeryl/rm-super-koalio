@@ -29,6 +29,10 @@ class GameLayer < Joybox::Core::Layer
     schedule_update do |delta|
       @world.step delta: delta
     end
+
+    on_touches_began do |touches, event|
+      @player.body.apply_force force:[100, 0], as_impulse: true
+    end
   end
 
   def on_exit
