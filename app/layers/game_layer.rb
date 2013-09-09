@@ -28,11 +28,24 @@ class GameLayer < Joybox::Core::Layer
     
     schedule_update do |delta|
       @world.step delta: delta
+      @player.move_forward if @moving 
     end
+    
+    screen_width = Director.sharedDirector.winSize.width
 
     on_touches_began do |touches, event|
-      @player.body.apply_force force:[100, 0], as_impulse: true
+      touches.each do |touch|
+        location = touch.locationInView(touch.view)
+        location.x > (screen_width / 2) ? (@moving = true) : @player.jump  
+      end
     end
+    
+    on_touches_ended do |touches, event|
+      touches.each do |touch|
+        @moving = false
+      end
+    end
+    
   end
 
   def on_exit

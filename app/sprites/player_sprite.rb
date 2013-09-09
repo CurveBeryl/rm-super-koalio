@@ -14,6 +14,14 @@ class PlayerSprite < Joybox::Physics::PhysicsSprite
     end
     super file_name: 'koalio_stand.png', body: @player_body
   end
+  
+  def move_forward
+    self.body.apply_force force:[10, 0], as_impulse: true
+  end
+  
+  def jump
+    self.body.apply_force force:[0, 250]
+  end
 
   def on_enter
     # Set up
