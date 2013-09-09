@@ -3,7 +3,8 @@ class PlayerSprite < Joybox::Physics::PhysicsSprite
   def initialize(world)
     @player_body = world.new_body(
       position: [16*1, 16*8],
-      type: KDynamicBodyType
+      type: Body::Dynamic,
+      fixed_rotation: true
     ) do
       polygon_fixture(
         box: [18, 26],

@@ -14,7 +14,7 @@ class AppDelegate
     @window.makeKeyAndVisible
     
     # push the game scene onto the director
-    @director << GameScene.new
+    @director << GameLayer.scene
     
     true
   end

@@ -1,10 +1,12 @@
 class GameLayer < Joybox::Core::Layer
   include Joybox::TMX
   
+  scene
+
   def on_enter
     @world = World.new(gravity: [0, -9.8])
     
-    @blue_sky = CCLayerColor.alloc.initWithColor([100, 100, 250, 255])
+    @blue_sky = LayerColor.new color: "#6365fc".to_color
     self << @blue_sky
     
     @tile_map = TileMap.new file_name: 'level1.tmx'
@@ -26,6 +28,10 @@ class GameLayer < Joybox::Core::Layer
     
     schedule_update do |delta|
       @world.step delta: delta
+    end
+
+    on_touches_began do |touches, event|
+      @player.body.apply_force force:[100, 0], as_impulse: true
     end
   end
 
