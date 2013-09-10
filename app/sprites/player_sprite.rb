@@ -18,16 +18,23 @@ class PlayerSprite < Joybox::Physics::PhysicsSprite
   end
   
   def move_forward
-    self.body.apply_force force:[10, 0], as_impulse: true
+    if alive?
+      self.body.apply_force force:[10, 0], as_impulse: true
+    end
   end
   
   def jump
-    self.body.apply_force force:[0, 250]
+    if alive?
+      SimpleAudioEngine.sharedEngine.playEffect 'jump.wav'
+      self.body.apply_force force:[0, 250]
+    end
   end
   
   def die
     @alive = false
     self.run_action Blink.with times:10
+    SimpleAudioEngine.sharedEngine.playEffect 'hurt.wav'
+    SimpleAudioEngine.sharedEngine.pauseBackgroundMusic
   end
   
   def alive?

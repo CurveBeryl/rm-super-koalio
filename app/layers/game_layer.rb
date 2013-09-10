@@ -4,6 +4,8 @@ class GameLayer < Joybox::Core::Layer
   scene
 
   def on_enter
+    SimpleAudioEngine.sharedEngine.playBackgroundMusic "level1.mp3"
+    
     @world = World.new(gravity: [0, -9.8])
     
     @blue_sky = LayerColor.new color: "#6365fc".to_color
