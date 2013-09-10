@@ -52,7 +52,7 @@ class GameLayer < Joybox::Core::Layer
       end
     end
     
-    screen_width = Director.sharedDirector.winSize.width
+    screen_width = Screen.width
 
     on_touches_began do |touches, event|
       touches.each do |touch|
@@ -90,15 +90,12 @@ class GameLayer < Joybox::Core::Layer
   end
   
   def set_viewpoint_center(position)
-    winSize = Director.sharedDirector.winSize
-    x = [position.x, winSize.width / 2].max
-    y = [position.y, winSize.height / 2].max
-    x = [x, (@tile_map.mapSize.width * @tile_map.tileSize.width) - winSize.width / 2].min
-    y = [y, (@tile_map.mapSize.height * @tile_map.tileSize.height) - winSize.height/2].min
-    
-    actualPosition = jbp(x, y)
-    centerOfView = jbp(winSize.width/2, winSize.height/2)
-    viewPoint = jbpSub(centerOfView, actualPosition)
+    x = [position.x, Screen.width / 2].max
+    y = [position.y, Screen.height / 2].max
+    x = [x, (@tile_map.mapSize.width * @tile_map.tileSize.width) - Screen.half_width].min
+    y = [y, (@tile_map.mapSize.height * @tile_map.tileSize.height) - Screen.half_height].min
+
+    viewPoint = Screen.center - [x, y].to_point
     @tile_map.position = viewPoint
   end
 
