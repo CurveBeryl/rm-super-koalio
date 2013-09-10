@@ -1,7 +1,8 @@
 class PlayerSprite < Joybox::Physics::PhysicsSprite
   
   def initialize(world)
-    @player_body = world.new_body(
+    @world = world
+    @player_body = @world.new_body(
       position: [16*1, 16*8],
       type: Body::Dynamic,
       fixed_rotation: true
@@ -13,6 +14,7 @@ class PlayerSprite < Joybox::Physics::PhysicsSprite
       )
     end
     super file_name: 'koalio_stand.png', body: @player_body
+    @alive = true
   end
   
   def move_forward
@@ -21,6 +23,15 @@ class PlayerSprite < Joybox::Physics::PhysicsSprite
   
   def jump
     self.body.apply_force force:[0, 250]
+  end
+  
+  def die
+    @alive = false
+    self.run_action Blink.with times:10
+  end
+  
+  def alive?
+    @alive
   end
 
   def on_enter

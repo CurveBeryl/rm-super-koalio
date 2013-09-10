@@ -13,11 +13,10 @@ class GameLayer < Joybox::Core::Layer
     self << @tile_map
     
     @walls = @tile_map.tile_layers['walls']
-    _tileSize = @walls.tileset.tileSize
-    _layerSize = @walls.layerSize
+    walls_layer_size = @walls.layerSize
 
-    (0.._layerSize.height - 1).each do |y|
-      (0.._layerSize.width - 1).each do |x|
+    (0..walls_layer_size.height - 1).each do |y|
+      (0..walls_layer_size.width - 1).each do |x|
         tile = @walls.tileAt([x, y])
         create_rectangular_fixture(@walls, x, y) if tile 
       end
@@ -26,10 +25,29 @@ class GameLayer < Joybox::Core::Layer
     @player = PlayerSprite.new(@world)
     @tile_map.add_child @player, 15
     
+    @hazards = @tile_map.tile_layers['hazards']
+    @hazard_tiles = []
+    hazards_layer_size = @hazards.layerSize
+
+    (0..hazards_layer_size.height - 1).each do |y|
+      (0..hazards_layer_size.width - 1).each do |x|
+        tile = @hazards.tileAt([x, y])
+        @hazard_tiles << create_rectangular_fixture(@walls, x, y) if tile 
+      end
+    end   
+    
+    @world.when_collide @player do |collision_sprite, is_touching|
+      if @hazard_tiles.include? collision_sprite
+        @player.die
+      end
+    end 
+    
     schedule_update do |delta|
-      @world.step delta: delta
-      @player.move_forward if @moving 
-      set_viewpoint_center(@player.position)
+      if @player.alive?
+        @world.step delta: delta
+        @player.move_forward if @moving 
+        set_viewpoint_center(@player.position)
+      end
     end
     
     screen_width = Director.sharedDirector.winSize.width
