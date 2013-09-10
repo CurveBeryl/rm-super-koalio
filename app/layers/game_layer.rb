@@ -29,6 +29,7 @@ class GameLayer < Joybox::Core::Layer
     schedule_update do |delta|
       @world.step delta: delta
       @player.move_forward if @moving 
+      set_viewpoint_center(@player.position)
     end
     
     screen_width = Director.sharedDirector.winSize.width
@@ -66,6 +67,19 @@ class GameLayer < Joybox::Core::Layer
                         friction: 0.3,
                         restitution: 0.0
     end
+  end
+  
+  def set_viewpoint_center(position)
+    winSize = Director.sharedDirector.winSize
+    x = [position.x, winSize.width / 2].max
+    y = [position.y, winSize.height / 2].max
+    x = [x, (@tile_map.mapSize.width * @tile_map.tileSize.width) - winSize.width / 2].min
+    y = [y, (@tile_map.mapSize.height * @tile_map.tileSize.height) - winSize.height/2].min
+    
+    actualPosition = jbp(x, y)
+    centerOfView = jbp(winSize.width/2, winSize.height/2)
+    viewPoint = jbpSub(centerOfView, actualPosition)
+    @tile_map.position = viewPoint
   end
 
 end
